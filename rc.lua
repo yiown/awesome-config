@@ -10,6 +10,8 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
+-- Calendar library
+local cal = require("lib.cal")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -41,7 +43,7 @@ end
 beautiful.init("~/.config/awesome/themes/claymore/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm -rv +sb -geometry 260x25"
+terminal = "xterm -rv +sb -geometry 225x25"
 editor = os.getenv("EDITOR") or "vi"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -110,7 +112,10 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibox
 -- Create a textclock widget
-mytextclock = awful.widget.textclock()
+mytextclock = awful.widget.textclock("%a %b %d, %H:%M:%S", 1)
+
+-- Calendar widget to attach to the textclock
+cal.register(mytextclock, "<b>%s</b>")
 
 -- Create a wibox for each screen and add it
 mywibox = {}
