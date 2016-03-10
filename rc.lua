@@ -12,6 +12,10 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 -- Calendar library
 local cal = require("lib.cal")
+-- Volume library
+local vol = require("apw/widget")
+-- Battery library
+local assault = require('assault/assault')
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -117,6 +121,11 @@ mytextclock = awful.widget.textclock("%a %b %d, %H:%M:%S", 1)
 -- Calendar widget to attach to the textclock
 cal.register(mytextclock, "<b>%s</b>")
 
+-- Battery widget
+bat = assault({
+  width = 20
+})
+
 -- Create a wibox for each screen and add it
 mywibox = {}
 mypromptbox = {}
@@ -197,6 +206,8 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
     right_layout:add(mytextclock)
+    right_layout:add(vol)
+    right_layout:add(bat)
     right_layout:add(mylayoutbox[s])
 
     -- Now bring it all together (with the tasklist in the middle)
@@ -276,7 +287,11 @@ globalkeys = awful.util.table.join(
                   awful.util.getdir("cache") .. "/history_eval")
               end),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end)
+    awful.key({ modkey }, "p", function() menubar.show() end),
+    -- Volume
+    awful.key({ }, "XF86AudioRaiseVolume",  vol.Up),
+    awful.key({ }, "XF86AudioLowerVolume",  vol.Down),
+    awful.key({ }, "XF86AudioMute",         vol.ToggleMute)
 )
 
 clientkeys = awful.util.table.join(
@@ -447,4 +462,14 @@ end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+
+-- Volume updater
+volTimer = timer({ timeout = 0.5 })
+volTimer:connect_signal("timeout", vol.Update)
+volTimer:start()
+-- }}}
+
+-- {{{ Auto start
+-- Network manager
+awful.util.spawn("nm-applet")
 -- }}}
