@@ -469,7 +469,3 @@ volTimer:connect_signal("timeout", vol.Update)
 volTimer:start()
 -- }}}
 
--- {{{ Auto start
--- Network manager
-awful.util.spawn("nm-applet")
--- }}}
