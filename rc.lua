@@ -291,7 +291,9 @@ globalkeys = awful.util.table.join(
     -- Volume
     awful.key({ }, "XF86AudioRaiseVolume",  vol.Up),
     awful.key({ }, "XF86AudioLowerVolume",  vol.Down),
-    awful.key({ }, "XF86AudioMute",         vol.ToggleMute)
+    awful.key({ }, "XF86AudioMute",         vol.ToggleMute),
+    -- screen lock
+    awful.key({ "Mod1", "Control" }, "l", function () awful.util.spawn("xscreensaver-command -lock") end)
 )
 
 clientkeys = awful.util.table.join(
